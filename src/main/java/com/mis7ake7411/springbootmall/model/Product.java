@@ -1,5 +1,6 @@
 package com.mis7ake7411.springbootmall.model;
 
+import com.mis7ake7411.springbootmall.constant.ProductCategory;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ public class Product {
     private String porductName;
 
     @NonNull
-    private String category;
+    private ProductCategory category;
 
     @NonNull
     @Column(name = "image_url")
