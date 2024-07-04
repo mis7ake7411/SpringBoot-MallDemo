@@ -6,4 +6,5 @@ import com.mis7ake7411.springbootmall.model.Product;
 public interface ProductService {
     Product getProductById(Integer id);
     Integer createProduct(ProductDto productDto);
+    void updateProduct(Integer id, ProductDto productDto);
 }

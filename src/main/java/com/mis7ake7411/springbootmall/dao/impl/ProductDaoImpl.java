@@ -46,7 +46,7 @@ public class ProductDaoImpl implements ProductDao {
                      ":description, :createdDate, :lastModifiedDate)";
         Map<String, Object> params = new HashMap<>();
         params.put("productName", productDto.getProductName());
-        params.put("category", productDto.getCategory());
+        params.put("category", productDto.getCategory().toString());
         params.put("imageUrl", productDto.getImageUrl());
         params.put("price", productDto.getPrice());
         params.put("stock", productDto.getStock());
@@ -60,5 +60,22 @@ public class ProductDaoImpl implements ProductDao {
 
         return keyHolder.getKey()
                         .intValue();
+    }
+
+    @Override
+    public void updateProduct(Integer id, ProductDto productDto) {
+        String sql = "UPDATE product SET product_name =:productName, category =:category, image_url =:imageUrl," +
+                     "price =:price, stock =:stock, description =:description, last_modified_date =:lastModifiedDate " +
+                     "WHERE product_id = :id";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        params.put("productName", productDto.getProductName());
+        params.put("category", productDto.getCategory().toString());
+        params.put("imageUrl", productDto.getImageUrl());
+        params.put("price", productDto.getPrice());
+        params.put("stock", productDto.getStock());
+        params.put("description", productDto.getDescription());
+        params.put("lastModifiedDate", new Date());
+        namedParameterJdbcTemplate.update(sql, params);
     }
 }

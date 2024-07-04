@@ -9,7 +9,7 @@ public class ProductDto {
     @NonNull
     private String productName;
     @NonNull
-    private String category;
+    private ProductCategory category;
     @NonNull
     private String imageUrl;
     @NonNull

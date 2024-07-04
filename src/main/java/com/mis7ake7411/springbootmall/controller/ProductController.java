@@ -22,7 +22,8 @@ public class ProductController {
         if (product != null) {
             return ResponseEntity.ok(product);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound()
+                             .build();
     }
 
     @PostMapping("/products")
@@ -32,5 +33,19 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                              .body(product);
+    }
+
+    @PutMapping("/products/{productId}")
+    public  ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody ProductDto productDto) {
+        Product product = productService.getProductById(productId);
+        if (product == null){
+            return ResponseEntity.notFound()
+                                 .build();
+        }
+
+        productService.updateProduct(productId, productDto);
+        Product updProduct = productService.getProductById(productId);
+
+        return ResponseEntity.ok(updProduct);
     }
 }
