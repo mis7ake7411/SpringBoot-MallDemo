@@ -23,6 +23,17 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
+    public List<Product> getProducts() {
+        String sql = "SELECT product_id, product_name, category, image_url, " +
+                "price, stock, description, created_date, last_modified_date " +
+                "FROM product";
+        Map<String, Object> params = new HashMap<String, Object>();
+
+        List<Product> query = namedParameterJdbcTemplate.query(sql, params, new ProductRowMapper());
+        return query;
+    }
+
+    @Override
     public Product getProductById(Integer id) {
         String sql = "SELECT product_id, product_name, category, image_url, " +
                      "price, stock, description, created_date, last_modified_date " +
@@ -86,4 +97,5 @@ public class ProductDaoImpl implements ProductDao {
         params.put("id", id);
         namedParameterJdbcTemplate.update(sql, params);
     }
+
 }
