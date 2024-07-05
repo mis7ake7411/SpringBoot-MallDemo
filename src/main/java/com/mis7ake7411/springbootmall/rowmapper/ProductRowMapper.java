@@ -10,17 +10,17 @@ import java.sql.SQLException;
 public class ProductRowMapper implements RowMapper<Product> {
     @Override
     public Product mapRow(ResultSet resultSet, int i) throws SQLException {
-        Product product = new Product();
-        product.setId(resultSet.getInt("product_id"));
-        product.setPorductName(resultSet.getString("product_name"));
-        product.setCategory(ProductCategory.valueOf(resultSet.getString("category")));
-        product.setImageUrl(resultSet.getString("image_url"));
-        product.setPrice(resultSet.getInt("price"));
-        product.setStock(resultSet.getInt("stock"));
-        product.setDescription(resultSet.getString("description"));
-        product.setCreateDate(resultSet.getTimestamp("created_date"));
-        product.setLastModifiedDate(resultSet.getTimestamp("last_modified_date"));
 
-        return product;
+        return Product.builder()
+                      .id(resultSet.getInt("product_id"))
+                      .productName(resultSet.getString("product_name"))
+                      .category(ProductCategory.valueOf(resultSet.getString("category")))
+                      .imageUrl(resultSet.getString("image_url"))
+                      .price(resultSet.getInt("price"))
+                      .stock(resultSet.getInt("stock"))
+                      .description(resultSet.getString("description"))
+                      .createdDate(resultSet.getTimestamp("created_date"))
+                      .lastModifiedDate(resultSet.getTimestamp("last_modified_date"))
+                      .build();
     }
 }

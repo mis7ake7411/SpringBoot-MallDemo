@@ -20,7 +20,7 @@ public class Product {
 
     @NonNull
     @Column(name = "product_name")
-    private String porductName;
+    private String productName;
 
     @NonNull
     private ProductCategory category;
@@ -39,7 +39,7 @@ public class Product {
 
     @NonNull
     @Column(name = "created_date")
-    private Date createDate;
+    private Date createdDate;
 
     @NonNull
     @Column(name = "last_modified_date")

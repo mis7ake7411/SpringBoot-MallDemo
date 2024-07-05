@@ -6,6 +6,7 @@ import com.mis7ake7411.springbootmall.dto.ProductDto;
 import com.mis7ake7411.springbootmall.dto.ProductQueryParams;
 import com.mis7ake7411.springbootmall.model.Product;
 import com.mis7ake7411.springbootmall.rowmapper.ProductRowMapper;
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -26,22 +27,35 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public List<Product> getProducts(ProductQueryParams queryParams) {
-        String sql = "SELECT product_id, product_name, category, image_url, " +
-                     "price, stock, description, created_date, last_modified_date " +
-                     "FROM product WHERE 1=1 ";
+        StringBuilder sql = new StringBuilder(
+                "SELECT product_id, product_name, category, image_url, " +
+                "price, stock, description, created_date, last_modified_date " +
+                "FROM product WHERE 1=1 ");
         Map<String, Object> params = new HashMap<String, Object>();
-        if (queryParams != null) {
-            if (queryParams.getCategory() != null) {
-                sql += "AND category = :category ";
-                params.put("category", queryParams.getCategory().name());
+
+        if (queryParams.getCategory() != null) {
+            sql.append("AND category = :category ");
+            params.put("category", queryParams.getCategory().name());
+        }
+        if (queryParams.getSearch() != null) {
+            sql.append("AND UPPER(product_name) LIKE :search ");
+            params.put("search", "%" + queryParams.getSearch().toUpperCase() + "%");
+        }
+        if (queryParams.getOrderBy() != null && queryParams.getOrderBy().length > 0) {
+            sql.append(" ORDER BY ");
+            for (int i = 0; i < queryParams.getOrderBy().length; i++) {
+                sql.append(queryParams.getOrderBy()[i])
+                   .append(" ")
+                   .append(queryParams.getSort()[i]);
+                if (i < queryParams.getOrderBy().length - 1) {
+                    sql.append(", ");
+                }
             }
-            if (queryParams.getSearch() != null) {
-                sql += "AND UPPER(product_name) LIKE :search ";
-                params.put("search", "%" + queryParams.getSearch().toUpperCase() + "%");
-            }
+        }else {
+            sql.append(" ORDER BY created_date DESC");
         }
 
-        List<Product> query = namedParameterJdbcTemplate.query(sql, params, new ProductRowMapper());
+        List<Product> query = namedParameterJdbcTemplate.query(sql.toString(), params, new ProductRowMapper());
         return query;
     }
 
