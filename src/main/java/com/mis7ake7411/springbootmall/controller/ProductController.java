@@ -5,6 +5,7 @@ import com.mis7ake7411.springbootmall.dto.ProductDto;
 import com.mis7ake7411.springbootmall.dto.ProductQueryParams;
 import com.mis7ake7411.springbootmall.model.Product;
 import com.mis7ake7411.springbootmall.service.ProductService;
+import com.mis7ake7411.springbootmall.util.Page;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class ProductController {
   ProductService productService;
 
   @GetMapping("/products")
-  public ResponseEntity<List<Product>> getProducts(
+  public ResponseEntity<Page<Product>> getProducts(
       // 查詢條件 Filtering
       @RequestParam(required = false) ProductCategory category,
       @RequestParam(required = false) String search,
@@ -41,9 +42,16 @@ public class ProductController {
                                                        .limit(limit)
                                                        .offset(offset)
                                                        .build();
+    Integer count = productService.getProductsCount(queryParams);
     List<Product> list = productService.getProducts(queryParams);
+    Page<Product> page = Page.<Product>builder()
+                             .limit(limit)
+                             .offset(offset)
+                             .total(count)
+                             .result(list)
+                             .build();
     return ResponseEntity.status(HttpStatus.OK)
-                         .body(list);
+                         .body(page);
   }
 
   @GetMapping("/products/{productId}")

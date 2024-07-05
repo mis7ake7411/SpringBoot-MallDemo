@@ -8,6 +8,7 @@ import com.mis7ake7411.springbootmall.model.Product;
 import java.util.List;
 
 public interface ProductService {
+    Integer getProductsCount(ProductQueryParams queryParams);
     List<Product> getProducts(ProductQueryParams queryParams);
     Product getProductById(Integer id);
     Integer createProduct(ProductDto productDto);
