@@ -23,19 +23,14 @@ public class ProductDaoImpl implements ProductDao {
   @Autowired
   private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+  Date now = new Date();
+
   @Override
   public Integer getProductsCount(ProductQueryParams queryParams) {
     StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM product WHERE 1=1 ");
     Map<String, Object> params = new HashMap<String, Object>();
     // 查詢條件 Filtering
-    if (queryParams.getCategory() != null) {
-      sql.append("AND category = :category ");
-      params.put("category", queryParams.getCategory().name());
-    }
-    if (queryParams.getSearch() != null) {
-      sql.append("AND UPPER(product_name) LIKE :search ");
-      params.put("search", "%" + queryParams.getSearch().toUpperCase() + "%");
-    }
+    queryParamsFilter(sql, params, queryParams);
 
     return namedParameterJdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
   }
@@ -48,14 +43,7 @@ public class ProductDaoImpl implements ProductDao {
         "FROM product WHERE 1=1 ");
     Map<String, Object> params = new HashMap<String, Object>();
     // 查詢條件 Filtering
-    if (queryParams.getCategory() != null) {
-      sql.append("AND category = :category ");
-      params.put("category", queryParams.getCategory().name());
-    }
-    if (queryParams.getSearch() != null) {
-      sql.append("AND UPPER(product_name) LIKE :search ");
-      params.put("search", "%" + queryParams.getSearch().toUpperCase() + "%");
-    }
+    queryParamsFilter(sql, params, queryParams);
     // 排序 Sorting
     if (queryParams.getOrderBy() != null && queryParams.getOrderBy().length > 0) {
       sql.append(" ORDER BY ");
@@ -97,23 +85,17 @@ public class ProductDaoImpl implements ProductDao {
 
   @Override
   public Integer createProduct(ProductDto productDto) {
-    String sql = "INSERT INTO product(product_name, category, image_url, " +
-        "price, stock, description, created_date, last_modified_date) " +
-        "VALUES (:productName, :category, :imageUrl, :price, :stock, " +
-        ":description, :createdDate, :lastModifiedDate)";
+    StringBuilder sql = new StringBuilder(
+        "INSERT INTO product(product_name, category, image_url, " +
+            "price, stock, description, created_date, last_modified_date) " +
+            "VALUES (:productName, :category, :imageUrl, :price, :stock, " +
+            ":description, :createdDate, :lastModifiedDate)");
     Map<String, Object> params = new HashMap<>();
-    params.put("productName", productDto.getProductName());
-    params.put("category", productDto.getCategory().toString());
-    params.put("imageUrl", productDto.getImageUrl());
-    params.put("price", productDto.getPrice());
-    params.put("stock", productDto.getStock());
-    params.put("description", productDto.getDescription());
-    Date now = new Date();
     params.put("createdDate", now);
-    params.put("lastModifiedDate", now);
+    addDataParams(sql, params, productDto);
 
     KeyHolder keyHolder = new GeneratedKeyHolder();
-    namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(params), keyHolder);
+    namedParameterJdbcTemplate.update(sql.toString(), new MapSqlParameterSource(params), keyHolder);
 
     return keyHolder.getKey()
         .intValue();
@@ -121,19 +103,14 @@ public class ProductDaoImpl implements ProductDao {
 
   @Override
   public void updateProduct(Integer id, ProductDto productDto) {
-    String sql = "UPDATE product SET product_name =:productName, category =:category, image_url =:imageUrl, " +
-            "price =:price, stock =:stock, description =:description, last_modified_date =:lastModifiedDate " +
-            "WHERE product_id = :id";
+    StringBuilder sql = new StringBuilder(
+        "UPDATE product SET product_name =:productName, category =:category, image_url =:imageUrl, " +
+            "price =:price, stock =:stock, description =:description, last_modified_date =:lastModifiedDate "+
+            "WHERE product_id = :id");
     Map<String, Object> params = new HashMap<>();
     params.put("id", id);
-    params.put("productName", productDto.getProductName());
-    params.put("category", productDto.getCategory().toString());
-    params.put("imageUrl", productDto.getImageUrl());
-    params.put("price", productDto.getPrice());
-    params.put("stock", productDto.getStock());
-    params.put("description", productDto.getDescription());
-    params.put("lastModifiedDate", new Date());
-    namedParameterJdbcTemplate.update(sql, params);
+    addDataParams(sql, params, productDto);
+    namedParameterJdbcTemplate.update(sql.toString(), params);
   }
 
   @Override
@@ -143,5 +120,25 @@ public class ProductDaoImpl implements ProductDao {
     params.put("id", id);
     namedParameterJdbcTemplate.update(sql, params);
   }
-  
+
+  private void queryParamsFilter(StringBuilder sql, Map<String, Object> params, ProductQueryParams queryParams){
+    if (queryParams.getCategory() != null) {
+      sql.append("AND category = :category ");
+      params.put("category", queryParams.getCategory().name());
+    }
+    if (queryParams.getSearch() != null) {
+      sql.append("AND UPPER(product_name) LIKE :search ");
+      params.put("search", "%" + queryParams.getSearch().toUpperCase() + "%");
+    }
+  }
+
+  private void addDataParams(StringBuilder sql, Map<String, Object> params, ProductDto productDto) {
+    params.put("productName", productDto.getProductName());
+    params.put("category", productDto.getCategory().toString());
+    params.put("imageUrl", productDto.getImageUrl());
+    params.put("price", productDto.getPrice());
+    params.put("stock", productDto.getStock());
+    params.put("description", productDto.getDescription());
+    params.put("lastModifiedDate", now);
+  }
 }
