@@ -1,5 +1,6 @@
 package com.mis7ake7411.springbootmall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ public class User {
   private Integer id;
 
   @NonNull
+  @JsonIgnore
   private String email;
 
   @NonNull

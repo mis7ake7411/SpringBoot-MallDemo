@@ -6,4 +6,5 @@ import com.mis7ake7411.springbootmall.model.User;
 public interface UserDao {
   Integer createUser(UserRegisterDto userRegisterDto);
   User getUserById(Integer id);
+  User getUserByEmail(String email);
 }
