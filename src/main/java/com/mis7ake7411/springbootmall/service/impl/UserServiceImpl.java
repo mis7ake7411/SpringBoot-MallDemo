@@ -1,6 +1,7 @@
 package com.mis7ake7411.springbootmall.service.impl;
 
 import com.mis7ake7411.springbootmall.dao.UserDao;
+import com.mis7ake7411.springbootmall.dto.UserLoginDto;
 import com.mis7ake7411.springbootmall.dto.UserRegisterDto;
 import com.mis7ake7411.springbootmall.model.User;
 import com.mis7ake7411.springbootmall.service.UserService;
@@ -24,6 +25,20 @@ public class UserServiceImpl implements UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
     return userDao.createUser(userRegisterDto);
+  }
+
+  @Override
+  public User login(UserLoginDto userLoginDto) {
+    User user = userDao.getUserByEmail(userLoginDto.getEmail());
+    if (user == null) {
+      log.warn("{} does not found.", userLoginDto.getEmail());
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+    if (!user.getPassword().equals(userLoginDto.getPassword())) {
+      log.warn("{} password does not match.", userLoginDto.getEmail());
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+    return user;
   }
 
   @Override
