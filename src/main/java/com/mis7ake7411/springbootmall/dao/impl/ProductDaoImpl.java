@@ -98,7 +98,7 @@ public class ProductDaoImpl implements ProductDao {
     namedParameterJdbcTemplate.update(sql.toString(), new MapSqlParameterSource(params), keyHolder);
 
     return keyHolder.getKey()
-        .intValue();
+                    .intValue();
   }
 
   @Override
@@ -134,7 +134,7 @@ public class ProductDaoImpl implements ProductDao {
 
   private void addDataParams(StringBuilder sql, Map<String, Object> params, ProductDto productDto) {
     params.put("productName", productDto.getProductName());
-    params.put("category", productDto.getCategory().toString());
+    params.put("category", productDto.getCategory().name());
     params.put("imageUrl", productDto.getImageUrl());
     params.put("price", productDto.getPrice());
     params.put("stock", productDto.getStock());
