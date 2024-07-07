@@ -27,10 +27,10 @@ public class User {
   private Integer id;
 
   @NonNull
-  @JsonIgnore
   private String email;
 
   @NonNull
+  @JsonIgnore
   private String password;
 
   @NonNull
