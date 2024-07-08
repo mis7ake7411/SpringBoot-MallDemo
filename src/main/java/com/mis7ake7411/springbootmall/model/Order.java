@@ -1,6 +1,6 @@
 package com.mis7ake7411.springbootmall.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +10,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,19 +25,22 @@ import lombok.NonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "order")
+public class Order {
   @Id
-  @Column(name = "user_id")
+  @Column(name = "order_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @NonNull
-  private String email;
+  @ManyToOne
+  @JsonBackReference
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @NonNull
-  @JsonIgnore
-  private String password;
+  @Column(name = "total_amount")
+  private Integer totalAmount;
 
   @NonNull
   @Column(name = "created_date")
@@ -46,6 +51,6 @@ public class User {
   private Date lastModifiedDate;
 
   @JsonManagedReference
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-  private List<Order> orderList;
+  @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+  private List<OrderItem> orderItems;
 }

@@ -1,6 +1,8 @@
 package com.mis7ake7411.springbootmall.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mis7ake7411.springbootmall.constant.ProductCategory;
+import java.util.List;
 import lombok.*;
 
 import javax.persistence.*;
@@ -44,4 +46,8 @@ public class Product {
     @NonNull
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<OrderItem> orderItemList;
 }
