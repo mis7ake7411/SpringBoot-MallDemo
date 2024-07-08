@@ -121,6 +121,19 @@ public class ProductDaoImpl implements ProductDao {
     namedParameterJdbcTemplate.update(sql, params);
   }
 
+  @Override
+  public void updateStock(Integer id, Integer stock) {
+    StringBuilder sql = new StringBuilder(
+        "UPDATE product SET stock =:stock, last_modified_date =:lastModifiedDate"
+            + " WHERE product_id = :id"
+    );
+    Map<String, Object> params = new HashMap<>();
+    params.put("id", id);
+    params.put("stock", stock);
+    params.put("lastModifiedDate", now);
+    namedParameterJdbcTemplate.update(sql.toString(), params);
+  }
+
   private void queryParamsFilter(StringBuilder sql, Map<String, Object> params, ProductQueryParams queryParams){
     if (queryParams.getCategory() != null) {
       sql.append("AND category = :category ");
