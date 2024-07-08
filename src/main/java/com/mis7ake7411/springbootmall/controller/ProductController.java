@@ -6,6 +6,7 @@ import com.mis7ake7411.springbootmall.dto.ProductQueryParams;
 import com.mis7ake7411.springbootmall.model.Product;
 import com.mis7ake7411.springbootmall.service.ProductService;
 import com.mis7ake7411.springbootmall.util.Page;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class ProductController {
   }
 
   @PostMapping("/products")
-  public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) {
+  public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductDto productDto) {
     Integer productId = productService.createProduct(productDto);
     Product product = productService.getProductById(productId);
 

@@ -1,26 +1,26 @@
 package com.mis7ake7411.springbootmall.dto;
 
 import com.mis7ake7411.springbootmall.constant.ProductCategory;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDto {
-    @NonNull
+    @NotNull
     private String productName;
-    @NonNull
+    @NotNull
     private ProductCategory category;
-    @NonNull
+    @NotNull
     private String imageUrl;
-    @NonNull
+    @NotNull
     private Integer price;
-    @NonNull
+    @NotNull
     private Integer stock;
 
     private String description;

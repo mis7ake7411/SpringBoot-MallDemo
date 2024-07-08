@@ -1,12 +1,16 @@
 package com.mis7ake7411.springbootmall.dao.impl;
 
 import com.mis7ake7411.springbootmall.dao.OrderDao;
+import com.mis7ake7411.springbootmall.model.Order;
 import com.mis7ake7411.springbootmall.model.OrderItem;
+import com.mis7ake7411.springbootmall.rowmapper.OrderItemRowMapper;
+import com.mis7ake7411.springbootmall.rowmapper.OrderRowMapper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -53,12 +57,42 @@ public class OrderDaoImpl implements OrderDao {
       OrderItem orderItem = orderItemList.get(i);
       params[i] = new MapSqlParameterSource();
       params[i].addValue("orderId", orderId);
-      params[i].addValue("productId",orderItem.getProduct().getId());
+      params[i].addValue("productId",orderItem.getProductId());
       params[i].addValue("quantity", orderItem.getQuantity());
       params[i].addValue("amount", orderItem.getAmount());
     }
 
     namedParameterJdbcTemplate.batchUpdate(sql.toString(), params);
+  }
+
+  @Override
+  public Order getOrderById(Integer orderId) {
+    StringBuilder sql = new StringBuilder(
+        "SELECT order_id , user_id, total_amount, created_date, last_modified_date "
+            + "FROM `order` WHERE order_id = :orderId"
+    );
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", orderId);
+
+    List<Order> list = namedParameterJdbcTemplate.query(sql.toString(), params, new OrderRowMapper());
+
+    return list.size() > 0
+        ? list.get(0) : null;
+  }
+
+  @Override
+  public List<OrderItem> getOrderItemByOrderId(Integer orderId) {
+    StringBuilder sql = new StringBuilder(
+        "SELECT oi.order_item_id , oi.order_id, oi.product_id, oi.quantity, oi.amount, " +
+        "p.product_name, p.image_url " +
+        "FROM `order_item` oi " +
+        "LEFT JOIN product p ON oi.product_id = p.product_id " +
+        "WHERE oi.order_id = :orderId"
+    );
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("orderId", orderId);
+
+    return namedParameterJdbcTemplate.query(sql.toString(), params, new OrderItemRowMapper());
   }
 
 }

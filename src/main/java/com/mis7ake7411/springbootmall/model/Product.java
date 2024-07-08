@@ -1,8 +1,7 @@
 package com.mis7ake7411.springbootmall.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mis7ake7411.springbootmall.constant.ProductCategory;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,34 +19,30 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
+    @NotNull
     @Column(name = "product_name")
     private String productName;
 
-    @NonNull
+    @NotNull
     private ProductCategory category;
 
-    @NonNull
+    @NotNull
     @Column(name = "image_url")
     private String imageUrl;
 
-    @NonNull
+    @NotNull
     private Integer price;
 
-    @NonNull
+    @NotNull
     private Integer stock;
 
     private String description;
 
-    @NonNull
+    @NotNull
     @Column(name = "created_date")
     private Date createdDate;
 
-    @NonNull
+    @NotNull
     @Column(name = "last_modified_date")
     private Date lastModifiedDate;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private List<OrderItem> orderItemList;
 }

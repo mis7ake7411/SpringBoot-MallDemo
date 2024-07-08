@@ -4,6 +4,7 @@ import com.mis7ake7411.springbootmall.dao.OrderDao;
 import com.mis7ake7411.springbootmall.dao.ProductDao;
 import com.mis7ake7411.springbootmall.dto.BuyItem;
 import com.mis7ake7411.springbootmall.dto.CreateOrderDto;
+import com.mis7ake7411.springbootmall.model.Order;
 import com.mis7ake7411.springbootmall.model.OrderItem;
 import com.mis7ake7411.springbootmall.model.Product;
 import com.mis7ake7411.springbootmall.service.OrderService;
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
       totalAmount += amount;
       // convert BuyItem to OrderItem
       OrderItem orderItem = OrderItem.builder()
-                                     .product(product)
+                                     .productId(product.getId())
                                      .amount(amount)
                                      .quantity(buyItem.getQuantity())
                                      .build();
@@ -48,5 +49,15 @@ public class OrderServiceImpl implements OrderService {
     orderDao.createOrderItems(orderId, orderItemList);
 
     return orderId;
+  }
+
+  @Override
+  public Order getOrderById(Integer orderId) {
+    Order order = orderDao.getOrderById(orderId);
+    List<OrderItem> orderItemList = orderDao.getOrderItemByOrderId(orderId);
+    System.out.println("================> "+orderItemList);
+    order.setOrderItemList(orderItemList);
+
+    return order;
   }
 }

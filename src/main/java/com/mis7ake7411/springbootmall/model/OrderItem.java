@@ -1,20 +1,17 @@
 package com.mis7ake7411.springbootmall.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 @Data
 @Builder
@@ -29,20 +26,22 @@ public class OrderItem {
   private Integer id;
 
   @NotNull
-  @ManyToOne
-  @JsonBackReference
-  @JoinColumn(name = "order_id")
-  private Order order;
+  @Column(name = "order_id")
+  private Integer orderId;
 
   @NotNull
-  @ManyToOne
-  @JsonBackReference
-  @JoinColumn(name = "product_id")
-  private Product product;
+  @Column(name = "product_id")
+  private Integer productId;
 
-  @NonNull
+  @NotNull
   private Integer quantity;
 
-  @NonNull
+  @NotNull
   private Integer amount;
+
+  @Transient
+  private String productName;
+
+  @Transient
+  private String imageUrl;
 }
