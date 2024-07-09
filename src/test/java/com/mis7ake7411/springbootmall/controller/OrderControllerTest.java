@@ -197,7 +197,7 @@ public class OrderControllerTest {
         .andExpect(jsonPath("$.limit", notNullValue()))
         .andExpect(jsonPath("$.offset", notNullValue()))
         .andExpect(jsonPath("$.total", notNullValue()))
-        .andExpect(jsonPath("$.results", hasSize(0)));
+        .andExpect(jsonPath("$.result", hasSize(0)));
   }
 
   @Test
@@ -210,7 +210,7 @@ public class OrderControllerTest {
         .andExpect(jsonPath("$.limit", notNullValue()))
         .andExpect(jsonPath("$.offset", notNullValue()))
         .andExpect(jsonPath("$.total", notNullValue()))
-        .andExpect(jsonPath("$.results", hasSize(0)));
+        .andExpect(jsonPath("$.result", hasSize(0)));
   }
 
   @Test
@@ -223,6 +223,6 @@ public class OrderControllerTest {
         .andExpect(jsonPath("$.limit", notNullValue()))
         .andExpect(jsonPath("$.offset", notNullValue()))
         .andExpect(jsonPath("$.total", notNullValue()))
-        .andExpect(jsonPath("$.results", hasSize(0)));
+        .andExpect(jsonPath("$.result", hasSize(0)));
   }
 }

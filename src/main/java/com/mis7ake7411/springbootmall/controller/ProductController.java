@@ -76,7 +76,7 @@ public class ProductController {
 
   @PutMapping("/products/{productId}")
   public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
-      @RequestBody ProductDto productDto) {
+      @RequestBody @Valid ProductDto productDto) {
     Product product = productService.getProductById(productId);
     if (product == null) {
       return ResponseEntity.notFound()
