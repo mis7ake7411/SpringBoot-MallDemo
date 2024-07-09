@@ -1,6 +1,7 @@
 package com.mis7ake7411.springbootmall.dao.impl;
 
 import com.mis7ake7411.springbootmall.dao.OrderDao;
+import com.mis7ake7411.springbootmall.dto.OrderQueryParams;
 import com.mis7ake7411.springbootmall.model.Order;
 import com.mis7ake7411.springbootmall.model.OrderItem;
 import com.mis7ake7411.springbootmall.rowmapper.OrderItemRowMapper;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -93,4 +95,37 @@ public class OrderDaoImpl implements OrderDao {
     return namedParameterJdbcTemplate.query(sql.toString(), params, new OrderItemRowMapper());
   }
 
+  @Override
+  public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+    StringBuilder sql = new StringBuilder(
+        "SELECT order_id, user_id, total_amount, created_date, last_modified_date FROM `order` WHERE 1=1 "
+    );
+    Map<String, Object> params = new HashMap<>();
+    queryParamsFilter(sql, params, orderQueryParams);
+    sql.append(" ORDER BY created_date DESC ");
+
+    sql.append(" LIMIT :limit OFFSET :offset");
+    params.put("limit", orderQueryParams.getLimit());
+    params.put("offset", orderQueryParams.getOffset());
+
+    return namedParameterJdbcTemplate.query(sql.toString(), params, new OrderRowMapper());
+  }
+
+  @Override
+  public Integer countOrder(OrderQueryParams orderQueryParams) {
+    StringBuilder sql = new StringBuilder(
+        "SELECT count(*) FROM `order` WHERE 1=1 "
+    );
+    Map<String, Object> params = new HashMap<>();
+    queryParamsFilter(sql, params, orderQueryParams);
+
+    return namedParameterJdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
+  }
+
+  private void queryParamsFilter(StringBuilder sql, Map<String, Object> params, OrderQueryParams orderQueryParams){
+    if (orderQueryParams.getUserId() != null) {
+      sql.append(" AND user_id =:userId");
+      params.put("userId", orderQueryParams.getUserId());
+    }
+  }
 }
